@@ -22,3 +22,11 @@
                                          :description ""
                                          :categories []
                                          :note "" }))
+
+(let [skeleton-file (java.io.File/createTempFile "skel" ".clj")
+      skeleton (generate-skeleton pic-dir)]
+  (fact "When I `write-skeleton` and `read-skeleton` again, I get the same."
+    (do (write-skeleton skeleton skeleton-file)
+        (read-skeleton skeleton-file))
+    => skeleton)
+  (.delete skeleton-file))
