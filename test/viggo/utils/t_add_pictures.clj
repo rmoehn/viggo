@@ -4,6 +4,7 @@
             [midje.sweet :refer :all]))
 
 (def pic-dir (io/resource "test/testpics"))
+(def skeleton-file (io/resource "test/skeleton.clj"))
 
 (fact "`normal-files-under` returns exactly all normal files in a dir"
   (map #(.getName %) (normal-files-under pic-dir))
@@ -30,3 +31,17 @@
         (read-skeleton skeleton-file))
     => skeleton)
   (.delete skeleton-file))
+
+(fact "`read-skeleton` gives me the data I wrote in the file"
+  (read-skeleton skeleton-file) => (just { :filename "pic01.svg"
+                                           :description "An A"
+                                           :categories ["Vowels" "Letters"]
+                                           :note "Drawn with Inkscape" }
+                                         { :filename "pic02.svg"
+                                           :description "A B"
+                                           :categories ["Consonants" "Letters"]
+                                           :note "Very quickly" }
+                                         { :filename "pic03.svg"
+                                           :description "A C"
+                                           :categories ["Consonants" "Letters"]
+                                           :note "CDC!" }))
