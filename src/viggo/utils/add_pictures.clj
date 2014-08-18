@@ -3,10 +3,11 @@
             [clojure.java.io :as io]
             [clojure.pprint :as pp :refer [pprint *print-right-margin*]]))
 
-(defn dirless-file-seq
-  "Like file-seq, but only returns normal files."
+(defn normal-files-under
+  "Like file-seq, but only returns normal files and works with URLs as well as
+   Files."
   [dir]
-  (filter #(.isFile %) (file-seq dir)))
+  (filter #(.isFile %) (file-seq (io/as-file dir))))
 
 (defn generate-skeleton
   "Returns a skeleton datastructure to hold the information for the pictures
@@ -18,7 +19,7 @@
                          :categories []
                          :note "" }))
        (sort-by #(.getName %)
-                (dirless-file-seq dir))))
+                (normal-files-under dir))))
 
 (defn write-skeleton
   "Pretty-prints the skeleton to the provided file, so that picture

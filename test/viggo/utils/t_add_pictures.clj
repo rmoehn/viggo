@@ -3,10 +3,10 @@
             [viggo.utils.add-pictures :refer :all]
             [midje.sweet :refer :all]))
 
-(def pic-dir (io/as-file (io/resource "test/testpics")))
+(def pic-dir (io/resource "test/testpics"))
 
-(fact "`dirless-file-seq` returns exactly all normal files in a dir"
-  (map #(.getName %) (dirless-file-seq pic-dir))
+(fact "`normal-files-under` returns exactly all normal files in a dir"
+  (map #(.getName %) (normal-files-under pic-dir))
       => (just ["pic01.svg" "pic02.svg" "pic03.svg"] :in-any-order))
 
 (fact "`generate-skeleton` returns a list of nearly empty Pictures."
