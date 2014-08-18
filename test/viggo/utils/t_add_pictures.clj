@@ -4,7 +4,7 @@
             [midje.sweet :refer :all]))
 
 (def pic-dir (io/resource "test/testpics"))
-(def skeleton-file (io/resource "test/skeleton.clj"))
+(def filled-in-file (io/resource "test/pic-data.clj"))
 
 (fact "`normal-files-under` returns exactly all normal files in a dir"
   (map #(.getName %) (normal-files-under pic-dir))
@@ -28,20 +28,20 @@
       skeleton (generate-skeleton pic-dir)]
   (fact "When I `write-skeleton` and `read-skeleton` again, I get the same."
     (do (write-skeleton skeleton skeleton-file)
-        (read-skeleton skeleton-file))
+        (read-pic-data skeleton-file))
     => skeleton)
   (.delete skeleton-file))
 
-(fact "`read-skeleton` gives me the data I wrote in the file"
-  (read-skeleton skeleton-file) => (just { :filename "pic01.svg"
-                                           :description "An A"
-                                           :categories ["Vowels" "Letters"]
-                                           :note "Drawn with Inkscape" }
-                                         { :filename "pic02.svg"
-                                           :description "A B"
-                                           :categories ["Consonants" "Letters"]
-                                           :note "Very quickly" }
-                                         { :filename "pic03.svg"
-                                           :description "A C"
-                                           :categories ["Consonants" "Letters"]
-                                           :note "CDC!" }))
+(fact "`read-pic-data` gives me the data I wrote in the file"
+  (read-pic-data filled-in-file) => (just { :filename "pic01.svg"
+                                            :description "An A"
+                                            :categories ["Vowels" "Letters"]
+                                            :note "Drawn with Inkscape" }
+                                          { :filename "pic02.svg"
+                                            :description "A B"
+                                            :categories ["Consonants" "Letters"]
+                                            :note "Very quickly" }
+                                          { :filename "pic03.svg"
+                                            :description "A C"
+                                            :categories ["Consonants" "Letters"]
+                                            :note "CDC!" }))

@@ -29,11 +29,9 @@
             *print-dup* true] ; Write map entries on one line each.
     (pprint skeleton (io/writer file))))
 
-(defn read-skeleton
-  "Reads a skeleton from a file."
+(defn read-pic-data
+  "Reads picture data from a filled-in skeleton file."
   [file]
   ;; TODO: Make `write-skeleton` write type information like `print`, so that
   ;;       we don't have to map maps to Pictures after reading.
-  ;; TODO: read-skeleton reads a filled-in skeleton, which is not really a
-  ;;       skeleton. Rename the function!
   (map map->Picture (read-string (slurp file))))
