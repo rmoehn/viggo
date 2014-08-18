@@ -16,7 +16,7 @@
   (map (fn [pic-file]
          (map->Picture { :filename (.getName pic-file)
                          :description ""
-                         :categories []
+                         :categories #{}
                          :note "" }))
        (sort-by #(.getName %)
                 (normal-files-under dir))))
