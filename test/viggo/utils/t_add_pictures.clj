@@ -24,7 +24,7 @@
                                          :categories #{}
                                          :note "" }))
 
-(let [skeleton-file (java.io.File/createTempFile "skel" ".clj")
+(let [skeleton-file (java.io.File/createTempFile "skel" ".edn")
       skeleton (generate-skeleton pic-dir)]
   (fact "When I `write-skeleton` and `read-skeleton` again, I get the same."
     (do (write-skeleton skeleton skeleton-file)

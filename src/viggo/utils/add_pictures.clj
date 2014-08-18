@@ -1,6 +1,7 @@
 (ns viggo.utils.add-pictures
   (:require [viggo.picture :refer :all]
             [clojure.java.io :as io]
+            [clojure.edn :as edn]
             [clojure.pprint :as pp :refer [pprint *print-right-margin*]]))
 
 (defn normal-files-under
@@ -34,4 +35,4 @@
   [file]
   ;; TODO: Make `write-skeleton` write type information like `print`, so that
   ;;       we don't have to map maps to Pictures after reading.
-  (map map->Picture (read-string (slurp file))))
+  (map map->Picture (edn/read-string (slurp file))))
