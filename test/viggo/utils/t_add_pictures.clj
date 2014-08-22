@@ -1,14 +1,15 @@
 (ns viggo.utils.t-add-pictures
   (:require [clojure.java.io :as io]
             [viggo.utils.add-pictures :refer :all]
+            [viggo.pictures :refer [test-pics]]
             [midje.sweet :refer :all]))
 
 (def pic-dir (io/resource "test/testpics"))
-(def filled-in-file (io/resource "test/pic-data.clj"))
+(def filled-in-file (io/resource "test/pic-data.edn"))
 
 (fact "`normal-files-under` returns exactly all normal files in a dir"
   (map #(.getName %) (normal-files-under pic-dir))
-      => (just ["pic01.svg" "pic02.svg" "pic03.svg"] :in-any-order))
+      => (just (map :filename test-pics) :in-any-order))
 
 (fact "`generate-skeleton` returns a list of nearly empty Pictures."
   (generate-skeleton pic-dir) => (just { :filename "pic01.svg"
@@ -33,16 +34,4 @@
   (.delete skeleton-file))
 
 (fact "`read-pic-data` gives me the data I wrote in the file"
-  (read-pic-data filled-in-file) => (just
-                                      { :filename "pic01.svg"
-                                        :description "An A"
-                                        :categories #{"Vowels" "Letters"}
-                                        :note "Drawn with Inkscape" }
-                                      { :filename "pic02.svg"
-                                        :description "A B"
-                                        :categories #{"Consonants" "Letters"}
-                                        :note "Very quickly" }
-                                      { :filename "pic03.svg"
-                                        :description "A C"
-                                        :categories #{"Consonants" "Letters"}
-                                        :note "CDC!" }))
+  (read-pic-data filled-in-file) => test-pics)
