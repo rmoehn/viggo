@@ -1,5 +1,6 @@
 (ns viggo.pic-data.map-store
-  (:require [viggo.pic-data :refer :all]))
+  (:require [clojure.edn :as edn]
+            [viggo.pic-data :refer :all]))
 
 (defn assoc-without-overwriting
   "Like assoc on maps, but throws an exception if the key already exists."
@@ -24,6 +25,17 @@
   (delete-pic [this pic]
     (MapStore. (dissoc (.picmap this) (:filename pic)))))
 
-(defn empty-store []
+(defn empty-store
   "Returns an empty PicData store"
+  []
   (MapStore. {}))
+
+(defn save-store
+  "Writes the store to disk."
+  [store file]
+  (spit (print-str store) file))
+
+(defn read-store
+  "Reads a store from disk."
+  [file]
+  (edn/read-string (slurp file)))

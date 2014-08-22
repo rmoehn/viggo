@@ -1,11 +1,14 @@
 (ns viggo.pic-data.t-map-store
-  (:require [viggo.pic-data.map-store :as map-store]
+  (:require [viggo.config :refer [config]]
+            [viggo.pic-data.map-store :as map-store]
             [viggo.pic-data :refer :all]
             [viggo.picture  :refer [map->Picture]]
             [viggo.pictures :refer [test-pics]]
             [midje.sweet :refer :all]))
 
 (def empty-pic-data map-store/empty-store)
+(def save-pic-data map-store/save-store)
+(def read-pic-data map-store/read-store)
 
 (fact "An empty picture data store contains no pictures."
   (get-all-pics (empty-pic-data)) => [])
@@ -42,3 +45,10 @@
   => (just [(nth test-pics 1) (nth test-pics 2)] :in-any-order)
   (get-pics-for-category (test-store) "EdElghac4")
   => [])
+
+(let [ts (test-store)]
+  (facts "I can make the store permanent."
+    (do
+      (save-pic-data (test-store) (:pic-data-file config))
+      (read-pic-data (:pic-data-file config)))
+    => ts))
