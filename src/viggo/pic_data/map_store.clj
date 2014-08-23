@@ -1,5 +1,6 @@
 (ns viggo.pic-data.map-store
   (:require [clojure.edn :as edn]
+            [viggo.picture :refer [map->Picture]]
             [viggo.pic-data :refer :all]))
 
 (defn assoc-without-overwriting
@@ -33,9 +34,10 @@
 (defn save-store
   "Writes the store to disk."
   [store file]
-  (spit (print-str store) file))
+  (spit file (prn-str (.picmap store))))
 
 (defn read-store
   "Reads a store from disk."
   [file]
-  (edn/read-string (slurp file)))
+  (MapStore. (edn/read-string {:readers {'viggo.picture.Picture map->Picture}}
+                              (slurp file))))

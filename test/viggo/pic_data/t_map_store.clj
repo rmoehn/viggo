@@ -46,9 +46,9 @@
   (get-pics-for-category (test-store) "EdElghac4")
   => [])
 
-(let [ts (test-store)]
+(let [written-store (test-store)
+      read-store (do
+                   (save-pic-data written-store (:pic-data-file config))
+                   (read-pic-data (:pic-data-file config)))]
   (facts "I can make the store permanent."
-    (do
-      (save-pic-data (test-store) (:pic-data-file config))
-      (read-pic-data (:pic-data-file config)))
-    => ts))
+    (get-all-pics read-store) => (get-all-pics written-store)))
