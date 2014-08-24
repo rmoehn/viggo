@@ -1,5 +1,5 @@
 (ns viggo.pic-data.t-map-store
-  (:require [viggo.config :refer [config]]
+  (:require [viggo.config :refer [get-config]]
             [viggo.pic-data.map-store :as map-store]
             [viggo.pic-data :refer :all]
             [viggo.picture  :refer [map->Picture]]
@@ -9,6 +9,8 @@
 (def empty-pic-data map-store/empty-store)
 (def save-pic-data map-store/save-store)
 (def read-pic-data map-store/read-store)
+
+(def config (get-config (com.google.common.io.Files/createTempDir)))
 
 (fact "An empty picture data store contains no pictures."
   (get-all-pics (empty-pic-data)) => [])
