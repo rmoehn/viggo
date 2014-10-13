@@ -15,10 +15,27 @@
             (io/file
               (io/resource "pictures")))))
 
-(html/deftemplate image-page (io/resource "templates/pic_list.html") [])
+(def image-data
+  (map (fn [img-file]
+         (let [basename (.getName img-file)]
+           {:src basename, :descr basename}))
+       image-files))
+
+(def ^:dynamic *pic-sel* [[:p (html/nth-of-type 1)]])
+
+(def pic-list-template (io/resource "templates/pic_list.html"))
+
+(html/defsnippet image-item pic-list-template *pic-sel*
+  [{:keys [src descr]}]
+  [:img] (html/do->
+           (html/set-attr :src src)
+           (html/set-attr :alt descr)))
+
+(html/deftemplate image-page pic-list-template [images]
+  [:body] (html/content (map image-item images)))
 
 (defroutes image-handler
-  (ANY "/" [] (image-page)))
+  (ANY "/" [] (image-page image-data)))
 ;; route/resources
 
 (def app (wrap-file image-handler (.getPath picture-resource)))
