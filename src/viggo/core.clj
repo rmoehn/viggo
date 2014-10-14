@@ -9,21 +9,23 @@
 
 (def picture-resource (io/resource "pictures"))
 
+;; REFACTOR: Extract utils.add-pictures/normal-files-under and add tests.
 (def image-files
   (filter #(.isFile %)
           (file-seq
             (io/file
               (io/resource "pictures")))))
 
+;; NOTE: At this point where I'll have to plug in some real stuff from a DB.
 (def image-data
   (map (fn [img-file]
          (let [basename (.getName img-file)]
            {:src basename, :descr basename}))
        image-files))
 
-(def ^:dynamic *pic-sel* [[:p (html/nth-of-type 1)]])
-
 (def pic-list-template (io/resource "templates/pic_list.html"))
+;; REVISIT: Why doesn't html/first-of-type work? Or was I just too silly?
+(def pic-sel [[:p (html/nth-of-type 1)]])
 
 (html/defsnippet image-item pic-list-template *pic-sel*
   [{:keys [src descr]}]
@@ -36,7 +38,6 @@
 
 (defroutes image-handler
   (ANY "/" [] (image-page image-data)))
-;; route/resources
 
 (def app (wrap-file image-handler (.getPath picture-resource)))
 
