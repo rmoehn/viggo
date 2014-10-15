@@ -4,64 +4,35 @@
             [ring.adapter.jetty :refer [run-jetty]]
             [ring.util.response :refer [response]]
             [ring.middleware.file :refer [wrap-file]]
-            [compojure.core :refer :all]))
+            [viggo.utils :refer [normal-files-under]]
+            [compojure.core :refer :all]
+            [net.cgrand.enlive-html :as html]))
 
 (def picture-resource (io/resource "pictures"))
+(def image-files (normal-files-under picture-resource))
 
-(def image-files
-  (filter #(.isFile %)
-          (file-seq
-            (io/file
-              (io/resource "pictures")))))
-
-(def add-newline
-  #(str % "\n"))
-
-(defn make-lines
-  "Return a multi-line string made from the string arguments."
-  [& strs]
-  (string/join \newline strs))
-
-(defn gen-paragraph
-  "Returns arbitrary html wrapped in paragraph tags."
-  [html-str]
-  (str "<p>" html-str "</p>\n\n"))
-
-(def html-doc-start
-  (make-lines
-     "<!DOCTYPE html>"
-     "<html lang=\"en\">"
-     "<head>"
-     "  <meta charset=\"utf-8\"/>"
-     "</head>"
-     "<body>"))
-
-(def html-doc-end
-  (make-lines
-     "</body>"
-     "</html>"))
-
-(defn gen-img-directive
-  "Takes an image file and returns a HTML directive for including that image
-  in a web page."
-  [file]
-  (let [basename (.getName file)]
-    (str "<img src=\"" basename "\">" basename "</img>")))
-
-(defn gen-image-list
-  [image-files]
-  (map #(gen-paragraph
-          (gen-img-directive %))
+;; NOTE: At this point where I'll have to plug in some real stuff from a DB.
+(def image-data
+  (map (fn [img-file]
+         (let [basename (.getName img-file)]
+           {:src basename, :descr basename}))
        image-files))
 
-(def image-page
-  (make-lines
-    html-doc-start
-    (string/join (gen-image-list image-files))
-    html-doc-end))
+(def pic-list-template (io/resource "templates/pic_list.html"))
+;; REVISIT: Why doesn't html/first-of-type work? Or was I just too silly?
+(def pic-sel [[:p (html/nth-of-type 1)]])
+
+(html/defsnippet image-item pic-list-template pic-sel
+  [{:keys [src descr]}]
+  [:img] (html/do->
+           (html/set-attr :src src)
+           (html/set-attr :alt descr)))
+
+(html/deftemplate image-page pic-list-template [images]
+  [:body] (html/content (map image-item images)))
 
 (defroutes image-handler
-  (ANY "/" [] image-page))
+  (ANY "/" [] (image-page image-data)))
 
 (def app (wrap-file image-handler (.getPath picture-resource)))
 

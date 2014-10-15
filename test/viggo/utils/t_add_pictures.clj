@@ -1,15 +1,10 @@
 (ns viggo.utils.t-add-pictures
   (:require [clojure.java.io :as io]
             [viggo.utils.add-pictures :refer :all]
-            [viggo.pictures :refer [test-pics]]
+            [viggo.pictures :refer [pic-dir test-pics]]
             [midje.sweet :refer :all]))
 
-(def pic-dir (io/resource "test/testpics"))
 (def filled-in-file (io/resource "test/pic-data.edn"))
-
-(fact "`normal-files-under` returns exactly all normal files in a dir"
-  (map #(.getName %) (normal-files-under pic-dir))
-      => (just (map :filename test-pics) :in-any-order))
 
 (fact "`generate-skeleton` returns a list of nearly empty Pictures."
   (generate-skeleton pic-dir) => (just { :filename "pic01.svg"

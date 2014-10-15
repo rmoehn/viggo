@@ -1,14 +1,9 @@
 (ns viggo.utils.add-pictures
   (:require [viggo.picture :refer :all]
+            [viggo.utils :refer [normal-files-under]]
             [clojure.java.io :as io]
             [clojure.edn :as edn]
             [clojure.pprint :as pp :refer [pprint *print-right-margin*]]))
-
-(defn normal-files-under
-  "Like file-seq, but only returns normal files and works with URLs as well as
-   Files."
-  [dir]
-  (filter #(.isFile %) (file-seq (io/as-file dir))))
 
 (defn generate-skeleton
   "Returns a skeleton datastructure to hold the information for the pictures

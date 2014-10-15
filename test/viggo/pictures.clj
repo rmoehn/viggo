@@ -1,5 +1,8 @@
 (ns viggo.pictures
-  (:require [viggo.picture :refer [map->Picture]]))
+  (:require [clojure.java.io :as io]
+            [viggo.picture :refer [map->Picture]]))
+
+(def pic-dir (io/resource "test/testpics"))
 
 (def test-pics
   (map map->Picture [{ :filename "pic01.svg"
